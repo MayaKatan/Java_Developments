@@ -1,0 +1,349 @@
+/**
+ * Represents a flight. A Flight object is represented by the flight's origin,destination,
+ * departure time, flight duration, no of passengers,if it is full and the price.
+ *
+ * @author: Maya Katan
+ * @Date: 14.05.2022
+ * @ID: 318266913
+ */
+
+public class Flight
+{
+    // instance variables and an constant
+    private int _flightDuration, _noOfPassengers, _price;
+    private String _origin, _destination;
+    private boolean _isFull;
+    private Time1 _departure;
+    private final int MAX_CAPACITY = 250;
+    int MIN = 0;
+    
+    // constructor which gets parameters
+    /**
+     * Constructor for a Flight object.
+     * If the number of passengers exceeds the maximum capacity the number of passengers will
+     * be set to the maxmum capacity If the number of passengers is negative the number of
+     * passengers will be set to zero. If the flight duration is negative the flight duration
+     * will be set to zero. If the price is negative the price will be set to zero.
+     * 
+     * @param destination  The city the flight lands at.
+     * @param origin  The city the flight leaves from.
+     * @param depHour  the departure hour (should be between 0-23).
+     * @param depMinute  The departure minute (should be between 0-59).
+     * @param flightDuration  The duration time in minutes(should not be negative).
+     * @param noOfPassengers  The number of passengers (should be between 0-maximum capacity).
+     * @param price  The price (should not be negative).
+     */
+    public Flight(String origin, String destination, int depHour,
+                  int depMinute,int flightDuration, int noOfPassengers, int price) 
+    {
+        if(noOfPassengers > MAX_CAPACITY) {
+            _noOfPassengers = MAX_CAPACITY;
+        }
+        else if(noOfPassengers < MIN) {
+            _noOfPassengers = MIN;
+        }
+        else {
+            _noOfPassengers = noOfPassengers;
+        }
+        
+        if((noOfPassengers == MAX_CAPACITY)){
+            this._isFull = true;
+        }
+        else {
+            this._isFull = false;
+        }
+        
+        if(flightDuration < MIN) {
+            _flightDuration = MIN;
+        }
+        else {
+            _flightDuration = flightDuration;
+        }
+        
+        if(price < MIN) {
+            _price = MIN;
+        }
+        else {
+            _price = price;
+        }
+        
+        this._origin = origin;
+        this._destination = destination;
+        _departure = new Time1(depHour,depMinute);
+    }
+
+    // copy constructor
+    /**
+     * Copy constructor for a Flight object.
+     * Construct a Flight object with the same attributes as another Flight object.
+     * 
+     * @param other  The Flight object from which to construct the new Flight.
+     */
+    public Flight(Flight other)
+    { 
+        _flightDuration = other._flightDuration;
+        _noOfPassengers = other._noOfPassengers;
+        _price = other._price;
+        _origin = other._origin;
+        _destination = other._destination;
+        _isFull = other._isFull;
+        _departure = new Time1(other._departure);
+    }
+    
+    // get methods
+    /**
+     * Returns the flight duration time in minutes.
+     *
+     * @return  The flight duration.
+     */
+    public int getFlightDuration()
+    { 
+        return _flightDuration;
+    }
+    
+    /**
+     * Returns the number of passengers on the flight.
+     *
+     * @return  The number of passengers.
+     */
+    public int getNoOfPassengers()
+    { 
+        return _noOfPassengers;
+    }
+    
+    /**
+     * Returns the price of the flight .
+     *
+     * @return  The price.
+     */
+    public int getPrice()
+    { 
+        return _price;
+    }
+    
+    /**
+     * Returns the flight origin.
+     *
+     * @return  The flight origin.
+     */
+    public String getOrigin()
+    { 
+        return new String (_origin);
+    }
+    
+    /**
+     * Returns the flight destination.
+     *
+     * @return  The flight destination.
+     */
+    public String getDestination()
+    { 
+        return _destination;
+    }
+    
+    /**
+     * Returns whether the flight is full or not.
+     *
+     * @return  True if the flight is full.
+     */
+    public boolean getIsFull()
+    { 
+        return _isFull;
+    }
+    
+    /**
+     * Returns the flight departure time.
+     *
+     * @return  A copy of the flight departure time.
+     */
+    public Time1 getDeparture() 
+    { 
+        return _departure = new Time1(_departure);
+    }
+    
+    // set methods
+    /**
+     * An example of a method - replace this comment with your own
+     *
+     * @param flightDuration  The flight's new duration time.
+     */
+    public void setFlightDuration(int flightDuration)
+    { 
+        if(flightDuration >= MIN){
+        _flightDuration = flightDuration;
+        }
+    }
+    
+    /**
+     * Changes the number of passengers. If the parameter is negative or larger than the
+     * maximum capacity the number of passengers will remain unchanged.
+     *
+     * @param noOfPassengers  The new number of passengers.
+     */
+    public void setNoOfPassengers(int noOfPassengers)
+    { 
+        if((noOfPassengers >= MIN) && (noOfPassengers <= MAX_CAPACITY)){
+        _noOfPassengers = noOfPassengers;
+        }
+        
+        if(_noOfPassengers != MAX_CAPACITY){
+            _isFull = false;     
+        }
+        else{
+            _isFull = true;
+        }
+    }
+    
+    /**
+     * Changes the flight price. If the parameter is negative the price will remain unchanged.
+     *
+     * @param price  The new price.
+     */
+    public void setPrice(int price)
+    { 
+        if(price >= MIN){
+        _price = price;
+        }   
+    }   
+    
+    /**
+     * Changes the flight's origin.
+     *
+     * @param origin  The flight's new origin.
+     */
+    public void setOrigin(String origin)
+    { 
+        _origin = origin;
+    }
+    
+    /**
+     * Changes the flight's destination.
+     *
+     * @param destination  The flight's new destination.
+     */
+    public void setDestination(String destination)
+    { 
+        _destination = destination;
+    }
+    
+    /**
+     * Changes the flight's departure time.
+     *
+     * @param departure  The flight's new departure time.
+     */
+    public void setDeparture(Time1 departure)
+    { 
+        _departure = new Time1(departure);
+    }
+    
+    // toString method
+    /**
+     * Return a string representation of this flight
+     * (for example: "Flight from London to Paris departs at 09:24.Flight is full.").
+     *
+     * @param return  String representation of this flight
+     * (for example: "Flight from London to Paris departs at 09:24.Flight is full.").
+     */
+    public String toString()
+    { 
+        
+        if(_isFull) {
+            return "Flight from " +_origin+ " to " +_destination+
+                   " departs at " +_departure+ ". Flight is full.";
+        }
+        else {
+            return "Flight from " +_origin+ " to " +_destination+
+                   " departs at " +_departure+ ". Flight is not full.";
+        }
+    }
+    
+    // calculation methods
+    // arrival time
+    /**
+     * Returns the arrival time of the flight .
+     *
+     * @return  The arrival time of this flight.
+     */
+    public Time1 getArrivalTime()
+    {
+        return _departure.addMinutes(_flightDuration);
+    }
+    // pessengers addition
+    /**
+     * Add passengers to this flight. If the number of passengers exceeds he maximum capacity,
+     * no passengers are added and alse is returned.
+     * If the flight becomes full, the boolean attribute describing whether the flight if
+     * full becomes true.
+     *
+     * @param num  The number of passengers to be added to this flight.
+     * 
+     * @return  True if the passengers were added to the flight.
+     */
+    public boolean addPassengers(int num)
+    {
+        if(_isFull || _noOfPassengers + num > MAX_CAPACITY) {
+            return false;
+        }
+        else if(_noOfPassengers + num == MAX_CAPACITY) {
+            _noOfPassengers = _noOfPassengers + num;
+            _isFull = true;
+            return true;
+        }
+        else {
+            _noOfPassengers = _noOfPassengers + num;
+            return true;
+        }
+    }
+    // total price
+    /**
+     * Calculate the total price of the flight.
+     *
+     * @return  The total price of the flight.
+     */
+    public int totalPrice()
+    { 
+        return _noOfPassengers * _price;
+    }
+    
+    // other methods
+    /**
+     * Check if the received flight is equal to this flight.
+     * Flights are considered equal if the origin, destination and departure times are the same.
+     *
+     * @param other  The flight to be compared with this flight.
+     * 
+     * @return  True if the received flight is equal to this flight.
+     */
+    public boolean equals(Flight other)
+    {
+        return ((_origin.equals(other._origin)) &&
+               (_destination.equals(other._destination)) &&
+               (_flightDuration == other._flightDuration));
+    }
+    
+    /**
+     * Check if this flight is cheaper than another flight.
+     *
+     * @param other  The flight whose price is to be compared with this flight's price.
+     * 
+     * @return  True if this flight is cheaper than the received flight .
+     */
+    public boolean isCheaper(Flight other)
+    {
+        return _price < other._price;
+    }
+    
+    /**
+     * Check if this flight lands before another flight.
+     * Note - the flights may land on different days, the method checks which flight lands first.
+     *
+     *@param other  The flight whose arrival time to be compared with this flight's arrival time.
+     *
+     * @return  True if this flight arrives before the received flight.
+     */
+    public boolean landsEarlier(Flight other)
+    { 
+        return this.getArrivalTime().before(other.getArrivalTime());
+    }
+    
+}// end of class Flight
