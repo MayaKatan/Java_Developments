@@ -1,0 +1,223 @@
+/**
+ * The class "Airport" Represents the flight schedule at the airport on a daily basis.
+ *
+ * @author maya katan
+ * @Date: 31.05.2022
+ * @318266913
+ */
+public class Airport
+{
+    // instance variables and constants
+    private final int MAX_FLIGHTS = 200; // maximum number of flights
+    private Flight [] _flightsSchedule;
+    private int _noOfFlights; // total number of flights on the flight schedule
+    private String _city; // airport city location
+
+    
+     /**
+     * Constructs an Airport object.
+     * Constructor who gets the name of the city where the airport is located and initializes the
+     * class attributes, so that the flight array is at maximum size and the number of flights is 0.
+     * 
+     * @param city  The name of the city where the airport is located
+     */
+     public Airport(String city) { // section 3
+          _city = city;
+          _flightsSchedule = new Flight [MAX_FLIGHTS];
+          _noOfFlights = 0;
+     }   
+     
+     /**
+     * Adds a flight to the flight schedule.
+     * Gets a flight as a parameter, if the flightsSchedule is not full and the flight's origin
+     * city or destination city is the city location of the airport - the addition will be successful 
+     * and the noOfFlights will be updated.
+     * If the addition is successful - returns true, otherwise - returns false.
+     * 
+     * @param f  The flight that is added to the flights schedule
+     * @return  Returns if the addition of a flight was successful 
+     */
+     public boolean addFlight (Flight f) { // section 4
+         boolean flag = false;
+         if((_noOfFlights < MAX_FLIGHTS) && ((f.getOrigin().equals(_city))
+                                  || (f.getDestination().equals(_city)))){
+             for(int i = 0; i < _flightsSchedule.length; i++) {
+                 if(_flightsSchedule[i] == null) {
+                     _flightsSchedule [i] = new Flight(f);
+                     _noOfFlights++;
+                     return flag = true; }
+             }
+         }
+         return flag;
+     }
+     
+     /**
+     * Removes a flight from the flights schedule.
+     * Gets a flight as a parameter, if the flightsSchedule has at least one flight and the flight
+     * from the parameter exists in there - the deletion will be successful and the noOfFlights will be updated.
+     * If the deletion is successful - returns true, otherwise - returns false.
+     * 
+     * @param f  The flight that is removed from the flights schedule
+     * @return  Returns If the deletion was successful
+     */    
+     public boolean removeFlight (Flight f) { // section 5
+         boolean flag = false;
+         if(_noOfFlights == 0)
+             return flag;
+         for(int i = 0; i < _noOfFlights; i++){
+             if(_flightsSchedule[i].equals(f)) {
+                 _flightsSchedule[i] = _flightsSchedule[_noOfFlights-1];
+                 _flightsSchedule[_noOfFlights-1] = null;
+                 _noOfFlights--;
+                 return flag = true; }
+         }
+         return flag;  
+     }
+     
+     /**
+     * Returns the time of the first flight which departs from the specified place in the parameter.
+     * All the flights (if exists) which departs from the specified place in the parameter are compared
+     * by the time of departure, the earliest time is the first flight and will be returned.
+     * 
+     * @param place  The place which the first flight departs from  
+     * @return  Returns the time of departure of the earliest flight
+     */    
+     public Time1 firstFlightFromOrigin (String place) { // section 6 
+        if(_noOfFlights == 0){ // there is no flights
+             return null;    
+        }  
+        
+        Time1 first = null;
+        int i = 0;
+        while(i < _noOfFlights) {
+            if(first == null && _flightsSchedule[i].getOrigin().equals(place)) 
+                first = _flightsSchedule[i].getDeparture(); // first intialization for a matched flight
+            if(_flightsSchedule[i].getOrigin().equals(place) 
+                && _flightsSchedule[i].getDeparture().before(first))
+                first = _flightsSchedule[i].getDeparture(); // the earlier flight
+            i++;
+        }
+        return first; // the earliest flight
+        }
+     
+     /**
+     * Returns the number of full flights.
+     * 
+     * @return  Returns the number of full flights 
+     */    
+     public int howManyFullFlights() { // section 7
+        int temp = 0;
+        for(int i = 0 ; i < _noOfFlights ; i++){
+            if (_flightsSchedule[i].getIsFull() == true) {
+                temp++;
+            }
+        }
+        return temp;       
+     }
+     
+     /**
+     * Returns the number of flights which departs from the specified place in the parameter and their origin
+     * is the location city of the airport or departs from the location city of the airport and their origin
+     * is the specified place in the parameter.
+     * 
+     * @param place  The place which is the origin of the flights or their departure
+     * @reurn  Returns the number of flights which the place is their origin or their departure
+     */    
+     public int howManyFlightsBetween (String place) { // section 8
+        int count = 0;
+        for(int i = 0; i < _noOfFlights; i++) {
+            if(_flightsSchedule[i].getDestination().equals(place) &&
+               _flightsSchedule[i].getOrigin().equals(_city))
+                count++;
+            else if(_flightsSchedule[i].getOrigin().equals(place) &&
+                    _flightsSchedule[i].getDestination().equals(_city))
+                count++;
+        }
+        return count; 
+        }   
+     
+     /**
+     * Returns the most popular destination city.
+     * The city which has the highest number of flights to it.
+     * 
+     * @return  Returns the most popular destination city
+     */    
+     public String mostPopularDestination() { // section 9
+         if(_noOfFlights == 0){
+             return null;    
+         }
+         
+         int countMax = 0;
+         int count = 0;
+         String mostPopular = "";
+         for(int i = 0; i < _noOfFlights; i++) {
+            for(int j = 0; j < _noOfFlights; j++){ 
+                 if(_flightsSchedule[i].getDestination().equals(_flightsSchedule[j].getDestination())){
+                      count++;    // counts flights with equal destination
+                 }
+            } 
+            if(count > countMax) { // last count and currently max count comparison
+                countMax = count;   // last count is bigger
+                mostPopular = _flightsSchedule[i].getDestination(); }   // last count's flight
+         }
+         return mostPopular;
+     }
+     
+     /**
+     * Returns the most expensive flight.
+     * The flight which has the most expensive tickets to it.
+     * 
+     * @return  Returns the most expensive flight
+     */    
+     public Flight mostExpensiveTicket () { // section 10
+         if(_noOfFlights == 0){
+             return null;    
+         }  
+         
+         Flight mostExpensive = _flightsSchedule[0];
+         for(int i = 0; i < _noOfFlights; i++){ // ticket price comparison
+             if(_flightsSchedule[i].getPrice() > mostExpensive.getPrice()){
+                 mostExpensive = _flightsSchedule[i];
+             }
+         }
+         return new Flight(mostExpensive); 
+     }
+     
+     /**
+     * Returns the longest flight in the flights schedule.
+     * The flight which has the longest flight duration time in the flights schedule.
+     *
+     * @return  Returns the longest flight in the flights schedule
+     */    
+     public Flight longestFlight () { // section 11
+         if(_noOfFlights == 0){
+             return null;    
+         }  
+         
+         Flight theLongest = _flightsSchedule[0];
+         for(int i = 0; i < _noOfFlights; i++) { // flight duration comparison
+             if(_flightsSchedule[i].getFlightDuration() > theLongest.getFlightDuration())
+                 theLongest = _flightsSchedule[i];
+         }
+         return new Flight(theLongest); 
+     } 
+     
+     /**
+     * toString method. 
+     * Represents all the flights in the flights schedule.
+     * 
+     * @return  Returns the flights in the flights schedule
+     */    
+     public String toString() { // section 12
+         if(_noOfFlights == 0){
+             return null;    
+         }  
+         
+         String str = "The flights for airport " +_city+ " today are:";
+         for(int i = 0; i < _noOfFlights; i++){
+             str = str + "\n" +_flightsSchedule[i].toString();
+         }
+         return str;
+     }
+     
+}// End of class Airport
