@@ -1,0 +1,39 @@
+/**
+ * This class presents three Cases of a quadratic equation.
+ * Case A - There are two solutions to the equation.
+ * Case B - here is no solution to the equation.
+ * Case C - There is a single solution to this equation. In this case, the solution in this program will be displayed.
+ *
+ * @author (maya katan)
+ * @version (29.04.2022)
+ */
+import java.util.Scanner;
+ public class Equation{
+    public static void main(String[] args){  
+       Scanner scan = new Scanner(System.in);
+       System.out.println("Please enter the numerator value of A, and then enter the denominator value of A");
+       Rational a = new Rational (scan.nextInt(), scan.nextInt());
+       System.out.println("Please enter the numerator value of B, and then enter the denominator value of B");
+       Rational b = new Rational (scan.nextInt(), scan.nextInt());
+       System.out.println("Please enter the numerator value of c, and then enter the denominator value of c");
+       Rational c = new Rational (scan.nextInt(), scan.nextInt());
+       int DELTA = ((b.getNum()/b.getDen() * b.getNum()/b.getDen()) - (4 * a.getNum()/a.getDen() * c.getNum()/c.getDen())); 
+       int Solution;
+       
+       if((a.getNum()/a.getDen() != 0) && ((DELTA) > 0)){ // The equation has two different real roots
+           System.out.println("There are two solutions to this equation");
+       }
+       
+       if((a.getNum()/a.getDen() != 0) && ((DELTA) < 0)){ //The equation has no real roots
+          System.out.println("There is no solution to this equation");
+       }
+       
+       if((a.getNum()/a.getDen() != 0) && ((DELTA) == 0)){ //The equation has one real root
+           if((b.getNum()/b.getDen()) >= 0 || ((b.getNum()/b.getDen()) <= 0)){ //According to the formula of the roots
+                   Solution = (-(b.getNum()/b.getDen())) / (2 * (a.getNum()/a.getDen())); //According to the formula of the roots
+                   System.out.println("There is a single solution to this equation. The solution is:" +Solution);
+           }
+       }
+    }
+ } //end of class Equation
+ 
