@@ -3,4 +3,5 @@
 
 
 Project grades:
-* Calculation of a quadratic equation - 95
+* Calculation of a quadratic equation - Grade 95
+* Flight schedule project - Grade 96
