@@ -1,7 +1,7 @@
 /**
  * Represents a flight. A Flight object is represented by the flight's origin,destination,
  * departure time, flight duration, no of passengers,if it is full and the price.
- *
+ * 
  * @author: Maya Katan
  * @Date: 14.05.2022
  * @ID: 318266913
