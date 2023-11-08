@@ -558,3 +558,212 @@ public class Time1
 
 
 
+/**
+ * Represents time - hours:minutes. Values must represent a proper time.
+ *
+ * @author: Maya Katan
+ * @Date: 14.05.2022
+ * @ID: 318266913
+ */
+
+public class Time2
+{
+    // variable and constants
+    private int _minFromMid;
+    private final int MAX_HOUR = 24, MAX_MINUTE = 60, MIN = 0;
+    
+    // constructor which gets parameters
+    /**
+     * Constructs a Time2 object.
+     * Construct a new time instance with the specified hour and minute.
+     * hour should be between 0-23, otherwise it should be set to 0. minute should be between 0-59,
+     * otherwise they should be set to 0.
+     * 
+     * @param h  hour
+     * @param m  minute
+     */
+    public Time2(int h, int m)
+    { 
+        if(h < MIN || h > (MAX_HOUR - 1)){
+            h = MIN;  
+        }
+        
+        if((m < MIN || m > (MAX_MINUTE - 1))){
+            m = MIN;
+        } 
+        
+        this._minFromMid = h * MAX_MINUTE + m;
+    }
+
+    // copy constructor
+    /**
+     * Copy constructor for Time2. Constructs a time with the same variables as another time.
+     *
+     * @param  other  The time object from which to construct the new time
+     */
+    public Time2(Time2 other)
+    { 
+        _minFromMid = other._minFromMid;
+    }
+    
+    // get methods
+    /**
+     * Returns the hour of the time.
+     *
+     * @return  The hour of the time
+     */
+    public int getHour()
+    { 
+        return (_minFromMid / MAX_MINUTE);
+    }
+    
+    /**
+     * Returns the minute of the time.
+     *
+     * @return  The minute of the time
+     */
+    public int getMinute()
+    { 
+        return (_minFromMid % MAX_MINUTE);
+    }
+    
+    // set methods
+    /**
+     * Changes the hour of the time. If an illegal number is received hour will remain unchanged.
+     *
+     * @return  The new hour
+     */
+    public void setHour(int num)
+    { 
+         if (num >= MIN && num < MAX_HOUR)
+            _minFromMid = (_minFromMid % MAX_MINUTE + (num * MAX_MINUTE));
+    }
+    
+    /**
+     * Changes the minute of the time. If an illegal number is received minute will remain unchanged.
+     *
+     * @return  The new minute
+     */
+    public void setMinute(int num)
+    { 
+        if (num >= MIN && num <= MAX_MINUTE -1)
+            _minFromMid = getHour() * MAX_MINUTE + num;
+    }
+    
+    // time in minutes since midnight calculation method
+    /**
+     * Return the amount of minutes since midnight.
+     *
+     * @return  amount of minutes since midnight.
+     */
+    public int minFromMidnight()
+    { 
+        return _minFromMid;
+    }
+    
+    // other methods
+    /**
+     * Check if the received time is equal to this time.
+     *
+     * @param other  The time to be compared with this time
+     * 
+     * @return True if the received time is equal to this time
+     */
+    public boolean equals(Time2 other)
+    { 
+        return (this._minFromMid == other._minFromMid);
+    }
+    
+    /**
+     * Check if this time is before a received time.
+     *
+     * @param other  The time to check if this time is before
+     * 
+     * @return  True if this time is before other time
+     */
+    public boolean before(Time2 other)
+    { 
+        return (this._minFromMid < other._minFromMid);
+    }
+    
+    /**
+     * Check if this time is after a received time.
+     *
+     * @param other  The time to check if this time is after
+     * 
+     * @return  True if this time is after other time
+     */
+    public boolean after(Time2 other)
+    { 
+        return (this._minFromMid > other._minFromMid);
+    }
+    
+    /**
+     * Calculates the difference (in minutes) between two times.
+     *
+     * @param other  The time to check the difference with. Assumption: this time is after other time.
+     * 
+     * @return  int difference in minutes
+     */
+    public int difference(Time2 other)
+    { // as mentioned in the API - "parameter other - this time is after other time"
+        return -((other.minFromMidnight() - this.minFromMidnight())); 
+    }
+    
+    // toString method
+    /**
+     * Return a string representation of this time(hh:mm).
+     *
+     * @return  String representation of this time(hh:mm).
+     */
+    public String toString()
+    { 
+        if(this.getHour() > 9 && this.getMinute() > 9) {
+            return this.getHour()+ ":" +this.getMinute();
+        }
+        else if (this.getHour() > 9 && this.getMinute() < 10) {
+            return this.getHour()+ ":0" +this.getMinute();
+        }
+        else if (this.getHour() < 10 && this.getMinute() > 9) {
+            return "0" +this.getHour()+ ":" +this.getMinute();
+        }
+        else {
+            return "0" +this.getHour()+ ":0" +this.getMinute();
+        }
+    }
+    
+    // addition minutes calculation method
+    /**
+     * Copy current object and add requested minutes to new object.
+     *
+     * @param num  The minutes need to add.
+     * 
+     * @return  new update Time2 object.
+     */
+    public Time2 addMinutes(int num)
+    {
+        int m = MIN, h = MIN;
+        if(num >= MIN){
+            m = (this.minFromMidnight() + num) % MAX_MINUTE;
+            h = ((((this.minFromMidnight() + num) - m) / MAX_MINUTE) % MAX_HOUR);
+        }
+        
+        if(num < MIN){
+            h = ((this.minFromMidnight() + num) / MAX_MINUTE);  
+            m = (((this.minFromMidnight() + num) % MAX_MINUTE));  
+            if(Math.abs(num) > this.minFromMidnight())
+                h = MAX_HOUR + h;
+            else 
+                h = MAX_HOUR + h - 1;
+        }
+        
+        Time2 updatedTime = new Time2(h, m);
+        return updatedTime;  
+
+    }
+    
+}// end of class Time2
+
+
+
+
