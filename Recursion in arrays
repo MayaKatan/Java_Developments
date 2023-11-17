@@ -1,0 +1,154 @@
+import java.util.*;
+/**
+ * Ex13: Recursion in arrays
+ * 
+ * Q1 - Gets an array full of positive integers and returns True if the array has a valid route in it, if not returns False.
+ * definition of a valid route - the elment's value is the number of steps can need to be taken for the next element,
+ * the steps can be right or left.
+ * 
+ * 
+ * Q2 - Gets a digital roof map as an 2D array full of positive integers (except one element which its value is -1),
+ * and the position of the prince as the index i,j.
+ * the element which its value is -1 is the bad guy's location that the prince need to reach to.
+ * if there is no route that leads to the bad guy, the value -1 will be returned.
+ *
+ * @Author: Maya Katan
+ * @Date: 02.01.2023
+ */
+public class Ex13
+{
+    
+    /**
+     * Q1
+     * 
+     * Gets an array full of positive integers and returns if there is a valid route from the first element which leads to the last element
+     * in the array.
+     * valid route - the elment's value is the number of steps can need to be taken for the next element, the steps can be right or left.
+     * 
+     * @param a  The array 
+     * 
+     * @return  True if route is valid, else returns False
+     */
+    public static boolean isWay(int [] a) {
+        int [] aa = new int[a.length];
+        int [] aaa = new int[a.length];
+        return isWay(a, aa,aaa, 0);
+    }
+    /**
+     * Q1 - Auxiliary method
+     * 
+     * Checks for a valid route in the array.
+     * the start point is the first element of the array.
+     * the element that has been crossed by will be intialized to the value -1, eventually its value will be restored.
+     * 
+     * @param a  The array
+     * @param aa  The first auxiliary array 
+     * @param aaa  The second auxiliary array
+     * @param i  The index of the array
+     * 
+     * @return  True if route is valid, else returns False
+     */
+    private static boolean isWay(int [] a,int []aa,int[] aaa, int i) {
+        if  (i < 0 || i > a.length-1 || a[i] < 0) { // can't go right or left from current index, or the index already has been passed
+            a = aa; // the array gets back its value
+            return false;
+        }
+        
+        if  (i == a.length-1) { // reached to the last element
+            a = aa; // the array gets back its value
+            return true;
+        }
+        
+        int temp = a[i]; // keeps the value of the element for the calculation for the next step
+        
+        if(aa[i] == aaa[i]) // the element in the first auxiliary array has not been initialized
+            aa[i] = temp; // initializes the element in the first auxiliary array 
+        
+        a[i] = -1; // initializes the element of the array which has been crossed by 
+        
+        return  (isWay(a ,aa,aaa, i+temp) || isWay(a ,aa,aaa, i-temp));
+    }
+
+    
+    
+    /**
+     * Q2
+     * 
+     * Gets a digital roof map as an 2D array full of positive integers (except one element which its value is -1),
+     * and the position of the prince as the index i,j.
+     * the element which its value is -1 is the bad guy's location that the prince need to reach to.
+     * if there is no route that leads to the bad guy, the value -1 will be returned.
+     * 
+     * @param drm  The array which is the digital roof map
+     * @param i  The row of the prince's current location
+     * @param j  The column of the prince's current location
+     * 
+     * @return  The shortest route which lead to the element which its value is -1
+     */
+    public static int prince(int [][] drm, int i, int j) {
+        if(prince(drm,i,j,1,drm[i][j]) == Integer.MAX_VALUE)
+            return -1;
+            
+        return prince(drm,i,j,1,drm[i][j]);
+    }
+    /**
+     * Q2 - Auxiliary method 
+     * 
+     * Counts the number of elements needs to be passed for reaching to the element which its value is -1.
+     * if the current element value is equal to previous element value or lower by 1 or bigger by 1 or 2 it can cross.
+     * if there is more than one element that can be crossed by, the shortest route will be returned.
+     * 
+     * @param drm  The array which is the digital roof map
+     * @param i  The row of the prince's current location
+     * @param j  The The column of the prince's current location
+     * @param count  The number of elements which the prince has passed by
+     * @param prev  The previous element which its value compared to current element value
+     * 
+     * @return  The shortest route which lead to the element which its value is -1
+     */
+    private static int prince(int [][] drm, int i, int j, int count, int prev) {
+        // declaration of varaibles and constants with index values
+        final int firstInd = 0; // first index of the array
+        final int lastRowInd = drm.length-1; // last index of the array's row
+        final int lastColInd = drm[0].length-1; // last index of the array's column
+        int up = i-1, down = i+1, left = j-1, right = j+1; // movements index
+        
+        if(i < firstInd || i > lastRowInd || j < firstInd || j > lastColInd) // out of bounds
+            return Integer.MAX_VALUE;
+        
+        int curr = drm[i][j]; // current element    
+        
+        if(curr == Integer.MAX_VALUE) { // current element already has been crossed by
+            return Integer.MAX_VALUE;  
+        } 
+            
+        if(curr > prev + 2 || curr > prev + 1) // the distance from the previous element is too big
+            return Integer.MAX_VALUE;
+        
+        if(curr == -1) // current element is the bad guy location
+            return count;
+        
+        // checks if the bad guy is next to the prince
+        if(up >= firstInd && drm[up][j] == -1)
+            return count++;
+        else if(down <=  lastRowInd && drm[down][j] == -1)
+            return count++;
+        else if(left >= firstInd && drm[i][left] == -1)
+            return count++;
+        else if(right <= lastColInd && drm[i][right] == -1)
+            return count++;
+        
+        drm[i][j] = Integer.MAX_VALUE; // marks the current element
+                    
+        // declaration of the movements from the current element
+        int moveUp = prince(drm, i-1, j, count++, curr); // north
+        int moveDown = prince(drm, i+1, j, count++, curr); // south
+        int moveRight = prince(drm, i, j+1, count++, curr); // west
+        int moveLeft = prince(drm, i, j-1, count++, curr); // east
+ 
+        drm[i][j] = curr; // sets the current element with its input value
+        
+        return Math.min(Math.min(moveUp,moveDown),Math.min(moveLeft,moveRight));
+    }
+
+}// end of Ex13 class
