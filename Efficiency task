@@ -1,0 +1,123 @@
+/**
+ * Efficiency task
+ * 
+ * Q1: Gets a serial of 2n bits and returns the minimal number of swaps between two bits in the serial
+ * for creating the alternating sequence of bits.
+ * 
+ * Q2: Decoding the method "what" and finding a more efficient method which has better time and place complexity. 
+ * 
+ * @author Maya Katan
+ * @Date 10.12.2022
+ */
+public class Ex11{
+    /**
+     * Solution to question 1 
+     * Checks the chars with help of two pointers on the string (one from the start and the other from the end),
+     * the string contains an equal amount of '1' and '0', also the length of the string is an even number.
+     * using the two pointers as an index: if the chars are different between the indexes- the amount of '1' and '0' will remain
+     * the same at this edges, else - there is an unequal amount of '1' or '0' in the middle of the string.
+     * the pointers will get closer to each other by 2 steps every iteration and if one of the sides has an equal char next to
+     * its current index, its pointer will make another step.
+     * 
+     * Time complexity - O(n)
+     * Space complexity - O(1)
+     * 
+     * @param s  The String which is the serial of 2n bits
+     * 
+     * @return  The minimum number of swaps betweeen two bits in the serial for creating the alternating sequence of bits
+     */
+    public static int alternating(String s) {
+        int left = 0, right = s.length()-1; // pointers
+        int ones = s.length()/2, zeros = s.length()/2;  // amount of '0' and '1' left
+        int swapCount = 0;  // number of swaps
+        boolean flag = false; // only 1 swap requires
+        int i = 0, j = s.length()-1; // indexes to check if only 1 swap requires
+        while(left != right) {
+            if(s.charAt(i) != s.charAt(j)) { // 1 swap requires
+                flag = true;
+            }
+            else {
+                flag = false;
+            }
+            i++;j--;
+            if(s.charAt(left) == s.charAt(right)) { // chars equal in the both side's current index
+                if(s.charAt(left) == '0')
+                    zeros --;
+                else
+                    ones--;
+            }
+            else if(s.charAt(left) == s.charAt(left+1)) {   // chars equal in the left side current index and the its next index
+                if(s.charAt(left) == '0')
+                    zeros --;
+                else
+                    ones--;
+                left++;
+            }
+            else if(s.charAt(right) == s.charAt(right-1)) { // chars equal in the right side current index and the its next index
+                if(s.charAt(right) == '0')
+                    zeros --;
+                else
+                    ones--;
+                right--;
+            }
+            if(ones != zeros) { // unequal number between '0' and '1'
+                swapCount++;
+            }
+            if(right - left > 1) {  // right pointer has at least one step left till it meet the other pointer
+                right--; 
+            }
+            left++;
+        }
+        if(flag)
+            return 1;
+        return swapCount;
+    }
+    
+    /**
+     * Solution to question 2, section a:
+     * By giving an array full of integers, the method "what" will return the maximum number of consecutive terms whose sum is even.
+     */ 
+    
+    /**
+     * Solution to question 2, section b:
+     * Time complexity: O(n^3)
+     * The nested loop in the "what" method causes a time complexity of n^2.
+     * Because the static method "f" is contained in the nested loop, the runtime complexity becomes n^2
+     * 
+     * 
+     * place complexity: O(n)
+     * The algorithm allocates n memory cells, And so the complexity of the place is O(n).
+     * 
+     */ 
+    
+    /**
+     * olution to question 2, section c:
+     * The attached method is a more efficient version of the original method 
+     */ 
+    public static int what (int []a){
+      int sum = 0; // Checking the total amount so that we can divide by 2
+      int count = 0; // Count the maximum number of members
+      for(int i = 0;i < a.length;){
+          sum += a[i];
+          i++;
+          if (sum % 2 == 0){
+              count = i;
+          }
+      }
+      return count;
+    }
+    
+    /**
+     * Solution to question 2, section d:
+     * Time complexity = The number of basic operations performed by the algorithm relative to the input size.
+     * The loop runs n times, And so the complexity of the time is O(n).
+     * Time complexity {final answer}: O(n)
+     * 
+     * 
+     * Place complexity = the number of memory cells that the algorithm allocates during its operation as a function of the input size.
+     * The algorithm allocates two memory cells, And so the complexity of the place is O(1).
+     * place complexity {final answer}: O(1)
+     * 
+     */
+    
+}   // End of class Ex11.
