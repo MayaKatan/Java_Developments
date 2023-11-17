@@ -8,3 +8,4 @@ Project grades:
 * Airport flight schedule - Grade 97
 * Matrix - Grade 100
 * Efficiency task - Grade 86
+* Class Ex12 -  Grade 85
