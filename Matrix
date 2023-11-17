@@ -1,0 +1,143 @@
+/**
+ * The Matrix class represents a two-dimensional array of integers in the 255-0 range.
+ * The matrix represents a two-dimensional image in black and white.
+ * The number 0 represents the color white.
+ * The number 255 represents the color black.
+ * The rest of the numbers represent shades of gray.
+ *
+ * @author Maya Katan.
+ * @date 15.06.2022
+ */
+public class Matrix{
+     // instance variables 
+     private int [][] _array; 
+     private final int BLACK = 255;
+     /**
+     * Constructor a Matrix from a two-dimensioal array;
+     * the dimensions as well as the values of the Matrix will be the same as the dimensions and values of the tow-dimensional array.
+     */
+     public Matrix(int [][] array){ //First constructor
+        _array = new int[array.length][array[0].length];
+        for(int i = 0; i < _array.length; i++){
+            for(int j = 0; j < _array[i].length; j++){
+                _array[i][j] = array[i][j];    
+            }
+        }
+     }
+    
+     /**
+     * Constructor a size1 by size2 Matrix of zeroes;
+     * 
+     * @param size1 Represents the number of rows.
+     * @param size2 Represents the number of columns.
+     */
+     public Matrix(int size1, int size2){ //Second constructor
+        _array = new int[size1][size2];
+     }
+    
+     /**
+     * toString method.
+     * 
+     * @return a string representation of Matrix.
+     */
+     public String toString(){ // section 2
+        String str = "";
+        for(int i = 0; i < _array.length; i++){
+            str += "\n";
+            for(int j = 0; j < _array[i].length; j++){
+                str += (_array[i][j]+"\t");
+            }
+        }
+        return str;
+     }
+    
+     /**
+     * The method turns the image around the horizontal axis.
+     * The first row becomes the last row,The second row becomes the second from the end and so on.
+     * The return method returns the matrix obtained after it has been activated.
+     * 
+     * @return the inverted matrix toward the horizontal axis.
+     * 
+     */
+     public Matrix flipHorizontal(){ // section 3
+         for(int i = 0; i < _array.length/2; i++){
+            for(int j = 0; j < _array[i].length; j++){
+                int temp = _array[_array.length-1-i][j];
+                _array[_array.length-1-i][j] = _array[i][j];
+                _array[i][j] = temp;
+            }
+        }
+        return new Matrix(_array); 
+     }
+
+     /**
+     * The method turns the image around the vertical axis.
+     * The first column becomes the last column,The second column becomes the second from the end and so on.
+     * The return method returns the matrix obtained after it has been activated.
+      * 
+     * @return the inverted matrix toward the vertical axis
+     */
+     public Matrix flipVertical(){ // section 4
+        for(int j = 0; j < _array.length/2; j++){
+            for(int i = 0; i < _array[j].length; i++){
+                int temp = _array[i][_array[i].length-1-j];
+                _array[i][_array[i].length-1-j] = _array[i][j];
+                _array[i][j] = temp;
+            }
+        }
+        return new Matrix(_array);     
+     }
+    
+     /**
+     * A method that rotates the image 90 degrees clockwise.
+     * The method returns the resulting matrix.
+     * 
+     * @return the matrix after turning right at 90 degrees.    
+     */
+     public Matrix rotateClockwise ( ){ // section 5
+        int col = _array[0].length;
+        int row = _array.length;
+        int [][] temp = new int [col][row];
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                temp[j][row-1-i] = _array[i][j];
+            }
+        }
+        return new Matrix(temp);     
+     }
+    
+     /**
+     * The method rotates the image 90 degrees counterclockwise.
+     * The method returns the resulting matrix.
+     * 
+     * @return the matrix after turning left at 90 degrees
+     */
+     public Matrix rotateCounterClockwise(){ // section 6
+        int col = _array[0].length;
+        int row = _array.length;
+        int [][] temp = new int [col][row];
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                temp[j][i] = _array[i][col-1-j];
+            }
+        }
+        return new Matrix(temp);   
+     } 
+      
+     /**
+     * The method turns each point in the image (cell in the array) into a point with its opposite color.
+     * For example, the color white turns black and the color black turns white.
+     * In the same way, all shades of gray are also reversed.
+     * The method returns a new matrix no matter you are the original one
+     * 
+     * @return the opposite color of each square in the matrix.
+     */
+     public Matrix makeNegative(){ // section 7 
+        for(int i = 0; i < _array.length; i++){
+            for(int j = 0; j < _array[i].length; j++){
+                _array[i][j] = BLACK -_array[i][j];
+            }
+        }
+        return new Matrix(_array);
+     }
+} //End of Matrix class
