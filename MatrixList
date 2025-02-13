@@ -1,0 +1,254 @@
+/**
+ * MatrixList: Represents a matrix as a linked list. It allows storing and accessing
+ * matrix elements in a dynamic structure where each element is represented as a node in the list.
+ * The matrix is accessed using its row and column indices,
+ * and operations like setting, getting, and traversing the matrix are supported.
+ * 
+ * Method 1: "MatrixList"
+ * Converts a 2D array into a linked list representation of a matrix.
+ 
+ * Method 2: "getData_i_j" 
+ * Returns the value at position (i, j) in the matrix.
+ * 
+ * Method 3: "setData_i_j" 
+ * Sets the value at position (i, j) in the matrix.
+ * 
+ * Method 4: "toString" 
+ * Returns a string representation of the matrix.
+ * 
+ * Method 5: "findMax" 
+ * Finds the maximum value in the matrix.
+ * 
+ * Method 6: "countOccurrences" 
+ * Counts occurrences of a value x in the matrix.
+ * 
+ * @version 18.01.2024, Maya Katan
+ */
+
+public class MatrixList{
+    IntNodeMat _m00;
+    public MatrixList(){
+        _m00 = null;
+    }
+    // Question number 1
+    /**
+     * Constructs a MatrixList object from a given 2D integer array (matrix).
+     * The input matrix is converted into a linked list representation, 
+     * where each node corresponds to an element in the array and is linked to its neighbors.
+     * 
+     * Complexity:
+     * Time: O(m * n) - Where m is the number of rows and n is the number of columns in the matrix.
+     * Space: O(1) - No additional space beyond the linked structure is used.
+     * 
+     * @param mat A 2D integer array representing the matrix. If the matrix is empty or null, 
+     * the constructed MatrixList will also be empty (_m00 will be null).
+     */
+    public MatrixList(int[][]mat){ 
+          if (mat == null || mat.length == 0 || mat[0].length == 0) {
+            _m00 = null; //If the matrix is empty or invalid, set _m00 to null.
+            return;
+        }
+        IntNodeMat[] prevRow = new IntNodeMat[mat[0].length]; // An array to hold the previous row's nodes for establishing row connections
+        for (int i = 0; i < mat.length; i++) {  //Loop through each row in the matrix
+            IntNodeMat prevCol = null; 
+            for (int j = 0; j < mat[i].length; j++) { // Loop through each column in the current row
+                IntNodeMat current = new IntNodeMat(mat[i][j]);  // Create a new node for the current matrix element
+                if (i == 0 && j == 0) { //Set the first node of the matrix
+                    _m00 = current;
+                }
+                if (prevCol != null) {  // Link the columns (link to the previous cell in the column)
+                    prevCol.setNextCol(current);
+                    current.setPrevCol(prevCol);
+                }
+                if (i > 0) { // Link the rows (link to the cell above in the matrix)
+                    IntNodeMat above = prevRow[j];
+                    if (above != null) {
+                        above.setNextRow(current);
+                        current.setPrevRow(above);
+                    }
+                }
+                prevCol = current; // Update prevCol to point to the current node
+                prevRow[j] = current;  //revRow array to hold the current node for the next row
+            }
+        }
+    }
+    // Question number 2
+    /**
+     * Returns the value at position [i][j] in the matrix.
+     * If the indices are invalid (out of bounds), returns Integer.MIN_VALUE.
+     * 
+     * Time complexity: O(i + j), where i is the row index and j is the column index, 
+     * since the method traverses rows and columns to reach the specified position.
+     * Space complexity: O(1), as no additional space is used beyond local variables.
+     * 
+     * @param i The row index.
+     * @param j The column index.
+     * @return The value at [i][j] or Integer.MIN_VALUE if the indices are invalid.
+     */
+    public int getData_i_j (int i, int j){
+        if (_m00 == null || i < 0 || j < 0) {
+            return Integer.MIN_VALUE; // If the matrix is empty or i/j are invalid
+        }
+        IntNodeMat currentRow = _m00;
+        for (int row = 0; row < i; row++) {
+            if (currentRow.getNextRow() == null) {
+                return Integer.MIN_VALUE;   // If there are not enough rows
+            }
+            currentRow = currentRow.getNextRow();   // Move to row i
+        }
+        IntNodeMat currentCol = currentRow;
+        for (int col = 0; col < j; col++) {
+            if (currentCol.getNextCol() == null) {
+                return Integer.MIN_VALUE;  // If there are not enough columns in the row
+            }
+            currentCol = currentCol.getNextCol();  // Move to column j
+        }
+        return currentCol.getData();  // Return the value at [i][j]
+    }
+    /**
+     * Sets the value at position [i][j] in the matrix to the specified value.
+     * If the indices are invalid (out of bounds), no operation is performed.
+     * 
+     * Time complexity: O(i + j), where i is the row index and j is the column index,
+     * since the method traverses rows and columns to reach the specified position.
+     * Space complexity: O(1), as no additional space is used beyond local variables.
+     * 
+     * @param num The value to set at [i][j].
+     * @param i The row index.
+     * @param j The column index.
+     */
+    public void setData_i_j (int data, int i, int j){ 
+        if (i < 0 || j < 0) {   // If i or j are out of bounds of the matrix
+            return; // Do nothing if any of the parameters are invalid
+        }
+        IntNodeMat currentRow = _m00;
+        for (int row = 0; row < i; row++) { // Search for row i
+            if (currentRow != null) {
+                currentRow = currentRow.getNextRow();
+            } else {
+                return; // Stop if we reach a non-existent row
+            }
+        }
+        IntNodeMat currentCol = currentRow;
+        for (int col = 0; col < j; col++) {   // Search for column j in row i
+            if (currentCol != null) {
+                currentCol = currentCol.getNextCol();
+            } else {
+                return; // Stop if we reach a non-existent column
+            }
+        }
+        if (currentCol != null) {   // If we reached a valid position, update the value in the cell
+            currentCol.setData(data);
+        }
+    }
+    /**
+     * Returns a string representation of the matrix.
+     * Rows are separated by newline characters ("\n"), and columns are separated by tab characters ("\t").
+     * If the matrix is empty, an empty string is returned.
+     * 
+     * Time complexity: O(m * n), where m is the number of rows and n is the number of columns in the matrix.
+     * Space complexity: O(m * n), since a string representing the matrix needs to be created.
+     * 
+     * @return A string representing the matrix.
+     */
+    public String toString(){
+        if (_m00 == null) {
+            return ""; // If the matrix is empty, return an empty string
+        }
+        String result = "";  // Create an initial string to hold the result
+        IntNodeMat currentRow = _m00;  
+        while (currentRow != null) {  // Loop through the rows in the matrix  
+            IntNodeMat currentCol = currentRow;
+            while (currentCol != null) { // Loop through the columns in the row
+                result += currentCol.getData(); 
+                if (currentCol.getNextCol() != null) {  // If there is another column
+                    result += "\t"; 
+                }
+                currentCol = currentCol.getNextCol(); 
+            }
+            result += "\n";  // Add a newline after each row
+            currentRow = currentRow.getNextRow(); // Move to the next row
+        }
+        return result; 
+    }
+    // Question number 3
+    /**
+     * Finds the maximum value in the matrix using a recursive approach.
+     * This method starts the recursion with the first node (_m00) and passes the current 
+     * maximum value as it traverses through all rows and columns in the matrix.
+     * 
+     * The method does not use any loops, as it is fully implemented using recursion.
+     * 
+     * @return The maximum value found in the matrix. If the matrix is empty, 
+     *         Integer.MIN_VALUE is returned.
+     */
+    public int findMax() {
+        return findMax(_m00, null);
+    }
+    /**
+     * A helper method that performs the recursion through the matrix nodes.
+     * It compares the current node's value with the maximum found so far,
+     * and recursively finds the maximum in both the row and column directions.
+     * 
+     * The method traverses the matrix in both row and column directions,
+     * but does not use loops, relying entirely on recursion.
+     * 
+     * @param currentNode The current node being processed in the matrix.
+     * @param currentMax The current maximum value found during the recursion.
+     * @return The maximum value found from the current node and its descendants in both directions.
+     */
+    private int findMax(IntNodeMat currentNode, Integer currentMax) {
+        if (currentNode == null) {
+            return currentMax;        // If the current node is null, return the current maximum found (null)
+        }
+        int maxInCurrentNode;
+        if (currentMax == null) {
+            maxInCurrentNode = currentNode.getData(); // If currentMax is null, use current node's value
+        } else {
+            maxInCurrentNode = Math.max(currentMax, currentNode.getData()); // Compare with the current max
+        }
+        Integer maxInRow = findMax(currentNode.getNextCol(), maxInCurrentNode); // Recursively find the maximum value in the next column (same row)
+        Integer maxInColumn = findMax(currentNode.getNextRow(), maxInCurrentNode); // Recursively find the maximum value in the next row (same column)
+        if (maxInRow == null) {
+            return maxInColumn; // If no maximum is found in the row, return the column's maximum
+        } else {
+            return Math.max(maxInRow, maxInColumn); // Return the greater of the two maximums (row and column)
+        }
+    }
+    // Question number 4
+    /**
+     * Counts how many times the integer value x appears in the matrix.
+     * The matrix is assumed to be sorted in ascending order both row-wise and column-wise,
+     * meaning each row and each column are sorted in ascending order with no duplicate values within a row or column.
+     * 
+     * The method efficiently counts occurrences of x in the matrix by utilizing the sorted properties:
+     * - It skips over rows and columns where further occurrences of x are not possible.
+     * 
+     * This method traverses the matrix in a row-major order while leveraging early termination in rows,
+     * stopping further checks in a row once a value greater than x is found (since all values in that row are greater).
+     * 
+     * The time complexity of this solution is O(n + m), where n is the number of rows and m is the number of columns,
+     * since it only iterates through the matrix once, and skips over unnecessary rows and columns.
+     * The space complexity is O(1) as no extra space is used other than the loop variables.
+     * 
+     * @param x The integer value to search for in the matrix.
+     * @return The count of how many times x appears in the matrix.
+     */
+    public int howManyX(int x){
+        int count = 0;
+        IntNodeMat rowStart = _m00; 
+        while (rowStart != null) { // For each row
+            IntNodeMat current = rowStart; // Points to the beginning of the current row
+            while (current != null) { // Iterates over the columns of the row
+                if (current.getData() == x) {
+                    count++;
+                } else if (current.getData() > x) {
+                    break; // No need to check larger values in the same row
+                }
+                current = current.getNextCol(); // Move to the next column
+            }
+            rowStart = rowStart.getNextRow(); // Move to the next row
+        }
+        return count;
+    }
+} // End of class MatrixList
