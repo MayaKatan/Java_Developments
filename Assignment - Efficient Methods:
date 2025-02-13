@@ -1,0 +1,122 @@
+/**
+ * Assignment 12 - Efficient Methods:
+ * 
+ * Method number 1 ("maxDigit"):
+ * Recursively finds the largest digit in the given integer.
+ *  
+ * @param n The input integer (can be positive or negative).
+ * @return The largest digit in the given integer.
+ * 
+ * Method number 2 ("minOps"):
+ * Recursively calculates the minimum number of operations required to reach the number y starting from x,
+ * using two operations:
+ * 1. Increment the number by 1.
+ * 2. Double the number.
+ * 
+ * @param x The starting integer (must be smaller than y).
+ * @param y The target integer (must be greater than x).
+ * @return The minimum number of operations required to transform x into y.
+ * 
+ * Method number 3 ("noOfLetters"):
+ * Counts the number of unique alphabetic letters in a given string. 
+ * The method treats uppercase and lowercase letters as the same.
+ * 
+ * @param str the string to be checked.
+ * @return the number of unique alphabetic letters in the string.
+ * 
+ * @version 30.11.2024, by Maya Katan
+ */
+public class Ex12{
+    //Question number 1 - 20%
+    /**
+     * Recursively finds the largest digit in the given inte
+     * 
+     * @param n The input integer (can be positive or negative).
+     * @return The largest digit in the given integer.
+     */
+    public static int maxDigit (int n){
+        n = Math.abs(n);
+        if(n<10){
+            return n;
+        }
+        int currentDigit = n % 10;
+        int currentMax = maxDigit(n/10);
+        return Math.max(currentDigit,currentMax); 
+    }    
+    //Question number 2 - 30%
+    /**
+     * Recursively calculates the minimum number of operations required to reach the number y starting from x,
+     * using two operations:
+     * 1. Increment the number by 1.
+     * 2. Double the number.
+     * 
+     * This method applies recursion to determine the optimal sequence of operations to minimize the number
+     * of steps required to transform x into y.
+     * 
+     * @param x The starting integer (must be smaller than y).
+     * @param y The target integer (must be greater than x).
+     * @return The minimum number of operations required to transform x into y.
+     */   
+    public static int minOps (int x, int y) {
+        return minOps(x, y, 0);
+    }
+    /**
+     * Helper recursive method that tracks the number of operations performed.
+     * 
+     * @param x The current value of the number.
+     * @param y The target value.
+     * @param steps The number of operations performed so far.
+     * @return The minimum number of operations required to reach y from x.
+     */    
+    private static int minOps (int x, int y, int steps) {
+        if(x==y){
+            return steps; 
+        }
+        if(x > y){
+            return Integer.MAX_VALUE;
+        }
+        int addOne = minOps(x + 1, y, steps + 1);
+        int multiplyTwo = minOps(x * 2, y, steps + 1);
+        return Math.min(addOne,multiplyTwo);
+    }
+    //Question number 3 - 50%
+    /**
+     * Counts the number of unique English letters in a given string.
+     * This method treats uppercase and lowercase letters as the same.
+     * For example, 'A' and 'a' are considered the same letter.
+     * The method only counts alphabetic characters (ignores digits, punctuation, and special characters).
+     *
+     * @param str the string to be checked
+     * @return the number of unique alphabetic letters in the string
+     */
+    public static int noOfLetters(String str){
+        return noOfLetters(str, 0, "");
+    }
+    /**
+     * Helper recursive method that tracks the number of unique alphabetic letters in the string.
+     * This method checks each character of the string, normalizes it to lowercase, 
+     * and counts it only once, regardless of case. 
+     * The method ignores non-alphabetic characters (digits, punctuation, and special characters).
+     *
+     * @param str the string to be checked
+     * @param currentIndex the current position in the string
+     * @param checkedChars a string that keeps track of the letters we've already seen
+     * @return the number of unique alphabetic letters in the string from the current index onward
+     */
+    private static int noOfLetters(String str, int currentIndex, String checkedChars){
+        //if we've reached the end of the string, return 0
+        if (currentIndex == str.length()) {
+            return 0;
+        }
+        char currentChar = str.charAt(currentIndex);
+        //If the current character is a letter,check if we've seen it before
+        if (Character.isLetter(currentChar)) {
+            char normalizedChar = Character.toLowerCase(currentChar);
+            //If we haven't seen this letter yet
+            if (!checkedChars.contains(String.valueOf(normalizedChar))) {
+                return 1 + noOfLetters(str, currentIndex + 1, checkedChars + normalizedChar);
+            }
+        }
+        return noOfLetters(str, currentIndex + 1, checkedChars);
+    }
+}//End of class Ex.12
